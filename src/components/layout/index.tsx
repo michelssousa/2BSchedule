@@ -50,10 +50,10 @@ export const Wrapper: React.FC<Props> = ({ children }) => {
       h="100vh"
       position="relative"
       // bg="gray.600"
-      bg={colors.noActive}
+      bg={colors.body}
       maxW="container.md"
       overflow="hidden"
-      px={["0.5rem", "0"]}
+      // px={["0.5rem", "0"]}
       p={2}
     >
       {children}

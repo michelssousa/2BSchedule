@@ -27,7 +27,7 @@ import { colors } from "~/styles";
 const Logo = (props: BoxProps) => (
   <Box {...props}>
     <Heading as="h4" size="md" color={colors.primary}>
-      ToolBusiness - Reserva de Salas
+      2B Soluções - Reserva de Salas
     </Heading>
   </Box>
 );

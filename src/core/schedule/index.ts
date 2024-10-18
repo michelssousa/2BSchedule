@@ -39,17 +39,28 @@ export type Setup = {
   chaveToken: string;
 };
 
-const BASE_URL = "https://bahiabusin.sslblindado.com";
+const BASE_URL = "https://2bst.com.br";
 
 const fetcher = (url: string) =>
   axioClient.get(url).then((res: any) => res.data);
 
+// const post = (data: any) =>
+//   axios
+//     .post(scheduleManager.endpoints.schedulePost, data)
+//     .then((res: any) => res.data)
+//     .catch(() => []);
+
 const post = (data: any) =>
-  axios
-    .post(scheduleManager.endpoints.schedulePost, data)
-    .then((res: any) => res.data)
+  fetch(scheduleManager.endpoints.schedulePost, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+  })
+    .then((response) => response.json())
+    .then((json) => console.log(json))
     .catch(() => []);
 
+// "1-18092024-173000-1"
 export const scheduleManager = {
   hello: function () {
     return "";
@@ -68,10 +79,12 @@ export const scheduleManager = {
   shedulePost: async (data: string[]) => {
     try {
       const json = JSON.stringify({ reserva: data });
+
+      console.log(json);
       const _result = await post(json);
 
       if (_result) {
-        // console.log(_result); verificar
+        // console.log(_result); //verificar
         return true;
       }
       return false;
@@ -139,14 +152,14 @@ export const scheduleManager = {
     const _result = new Map<string, ScheduleDetail>();
     try {
       const getHoursReserved = await fetcher(
-        scheduleManager.endpoints.scheduleAll,
+        scheduleManager.endpoints.scheduleAll
       );
       const getHoursReservedTemp: Schedule[] = [...getHoursReserved.data];
       getHoursReservedTemp.map((reserved) =>
         _result.set(
           reserved.reserva,
-          scheduleManager.format.toScheduleDetail(reserved),
-        ),
+          scheduleManager.format.toScheduleDetail(reserved)
+        )
       );
       return _result;
     } catch (error) {
@@ -157,11 +170,11 @@ export const scheduleManager = {
     list: ScheduleDetail[],
     reservedData: string,
     reservedHour: string,
-    reservedRoom: string,
+    reservedRoom: string
   ) => {
     const _result = list.find(
       ({ data, hour, room }) =>
-        data === reservedData && hour === reservedHour && room === reservedRoom,
+        data === reservedData && hour === reservedHour && room === reservedRoom
     );
     if (typeof _result != "undefined") {
       return true;
@@ -172,14 +185,14 @@ export const scheduleManager = {
   blackListResumeForDayAndRoom: async (
     reservedData: string,
     reservedHour: string,
-    reservedRoom: string,
+    reservedRoom: string
   ) => {
     const blackList = await scheduleManager.blackList();
     const _schedules = [...blackList.values()];
 
     const _result = _schedules.find(
       ({ data, hour, room }) =>
-        data === reservedData && hour === reservedHour && room === reservedRoom,
+        data === reservedData && hour === reservedHour && room === reservedRoom
     );
     if (typeof _result != "undefined") {
       return _result;
@@ -203,7 +216,7 @@ export const scheduleManager = {
     day = 0,
     month = 0,
     year = 0,
-    user = 0,
+    user = 0
   ): Promise<Map<string, Partial<ScheduleDetail>>> => {
     const setup = await scheduleManager.getSetup();
     const blackList = await scheduleManager.blackList();
@@ -251,7 +264,7 @@ export const scheduleManager = {
       _baseScheduleKey = scheduleManager.format.key(
         room,
         _startHour.format(scheduleManager.format.data),
-        user,
+        user
       );
 
       if (
@@ -259,12 +272,12 @@ export const scheduleManager = {
           _reservedList,
           _startHour.format("DDMMYYYY"),
           _startHour.format("HHmmss"),
-          room,
+          room
         )
       ) {
         _result.set(
           _baseScheduleKey,
-          scheduleManager.format.toMakeScheduleDetail(_baseScheduleKey),
+          scheduleManager.format.toMakeScheduleDetail(_baseScheduleKey)
         );
       }
 
@@ -273,7 +286,7 @@ export const scheduleManager = {
         _baseScheduleKey = scheduleManager.format.key(
           room,
           _startHour.format(scheduleManager.format.data),
-          user,
+          user
         );
 
         if (
@@ -281,12 +294,12 @@ export const scheduleManager = {
             _reservedList,
             _startHour.format("DDMMYYYY"),
             _startHour.format("HHmmss"),
-            room,
+            room
           )
         ) {
           _result.set(
             _baseScheduleKey,
-            scheduleManager.format.toMakeScheduleDetail(_baseScheduleKey),
+            scheduleManager.format.toMakeScheduleDetail(_baseScheduleKey)
           );
         }
       }
