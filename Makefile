@@ -1,0 +1,2 @@
+up:
+	clear && yarn dev
