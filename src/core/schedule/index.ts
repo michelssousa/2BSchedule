@@ -138,11 +138,20 @@ export const scheduleManager = {
       `${room}-${date}-${user}`,
   },
   getSetup: async () => {
-    const getSetup = await fetcher(scheduleManager.endpoints.setup).then(
-      (e) => e
-    );
+    const getSetup = await fetcher(scheduleManager.endpoints.setup);
 
-    if (!getSetup) return [];
+    if (!getSetup) {
+      return {
+        i_setup: "",
+        minimumHours: 0,
+        rooms: [],
+        days: 0,
+        hourOpen: 0,
+        hourOff: 0,
+        minutesOpen: 0,
+        chaveToken: "",
+      } as Setup;
+    }
 
     const _resut: Setup = {
       i_setup: getSetup.data[0].i_setup,
@@ -154,6 +163,7 @@ export const scheduleManager = {
       minutesOpen: parseInt(getSetup.data[0].minutesOpen),
       chaveToken: getSetup.data[0].chaveToken,
     };
+
     return _resut;
   },
   blackList: async () => {
@@ -230,7 +240,7 @@ export const scheduleManager = {
     const blackList = await scheduleManager.blackList();
     const _result = new Map<string, Partial<ScheduleDetail>>();
     const _oneHourInMinutes = 60;
-    const _minimumHours: number = setup.minimumHours;
+    const _minimumHours: number = setup?.minimumHours!;
     const _days: number = day === 0 ? setup.days : 1;
     const _startDay: number = day === 0 ? new Date().getDate() : day;
     const _startMonth: number = month === 0 ? new Date().getMonth() : month - 1;

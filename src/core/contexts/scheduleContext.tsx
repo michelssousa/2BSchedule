@@ -37,7 +37,7 @@ const ScheduleProvider: React.FC<Props> = ({ children }) => {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [room, setRoom] = useState<number>(1);
   const [hoursSelected, setHoursSelected] = useState<string[]>([]);
-  const [getSetup, setSetup] = useState<Setup>();
+  const [getSetup, setSetup] = useState<Setup | any>();
   const [getUser, setUser] = useState(0);
   const [rooms, setRooms] = useState<RoomType[]>();
   const [update, setUpdate] = useState();
@@ -88,7 +88,7 @@ const ScheduleProvider: React.FC<Props> = ({ children }) => {
         setHoursSelected((list) => [...list, _buttonSelected]);
       } else {
         setHoursSelected(
-          hoursSelected.filter((item) => item !== _buttonSelected)
+          hoursSelected.filter((item) => item !== _buttonSelected),
         );
       }
     },
