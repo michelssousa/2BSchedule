@@ -55,14 +55,16 @@ const TimeButton: React.FC<ButtonTimeProps> = ({ value, ...rest }) => {
   return (
     <Button
       {...rest}
-      variant={show ? "solid" : "outline"}
+      variant={show ? "outline" : "solid"}
       colorScheme="facebook"
+      color={colors.primary}
+      bg={colors.noActive}
       h="1rem"
       size={["xs", "xs"]}
       padding={["0", "0.7rem"]}
       value={value}
       onClick={(e) => handleClick(e)}
-      isActive
+      // isActive
     >
       {_label}
     </Button>

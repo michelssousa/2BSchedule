@@ -65,14 +65,19 @@ const ScheduleProvider: React.FC<Props> = ({ children }) => {
       return false;
     },
     deleteSchedule: async (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      const scheduleKeyDeleted = e.currentTarget.value;
-      const _result = await scheduleManager.sheduleDelete(scheduleKeyDeleted);
-      if (_result) {
-        setHoursSelected((list) => [...list, "1"]);
-        setHoursSelected([]);
-        return _result;
-      }
+      let _result = false;
+
+      try {
+        e.preventDefault();
+        const scheduleKeyDeleted = e.currentTarget.value;
+        _result = await scheduleManager.sheduleDelete(scheduleKeyDeleted);
+        if (_result) {
+          setHoursSelected((list) => [...list, "1"]);
+          setHoursSelected([]);
+          return _result;
+        }
+      } catch {}
+
       return _result;
     },
     getHoursFreeSelected: (e: React.MouseEvent<HTMLButtonElement>) => {

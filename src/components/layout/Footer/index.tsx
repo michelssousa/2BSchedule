@@ -37,8 +37,9 @@ export const Footer: React.FC<Props> = () => {
       <Row>
         <Button
           size="lg"
-          colorScheme={"facebook"}
+          colorScheme="facebook"
           color={colors.noActive}
+          bg={colors.primary}
           onClick={scheduleRegister}
           isDisabled={verifySelectedHours <= 0 ? true : false}
         >

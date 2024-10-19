@@ -7,7 +7,8 @@ const axioClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    "Access-Control-Allow-Methods": "*",
+    "Cache-Control": "no-cache",
   },
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
@@ -42,23 +43,26 @@ export type Setup = {
 const BASE_URL = "https://2bst.com.br";
 
 const fetcher = (url: string) =>
-  axioClient.get(url).then((res: any) => res.data);
-
-// const post = (data: any) =>
-//   axios
-//     .post(scheduleManager.endpoints.schedulePost, data)
-//     .then((res: any) => res.data)
-//     .catch(() => []);
+  axioClient
+    .get(url)
+    .then((res: any) => res.data)
+    .catch(() => "");
 
 const post = (data: any) =>
-  fetch(scheduleManager.endpoints.schedulePost, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-type": "application/json; charset=UTF-8" },
-  })
-    .then((response) => response.json())
-    .then((json) => console.log(json))
+  axios
+    .post(scheduleManager.endpoints.schedulePost, data)
+    .then((res: any) => res.data)
     .catch(() => []);
+
+// const post = (data: any) =>
+//   fetch(scheduleManager.endpoints.schedulePost, {
+//     method: "POST",
+//     body: JSON.stringify(data),
+//     headers: { "Content-type": "application/json; charset=UTF-8" },
+//   })
+//     .then((response) => response.json())
+//     .then((json) => console.log(json))
+//     .catch(() => []);
 
 // "1-18092024-173000-1"
 export const scheduleManager = {
@@ -68,8 +72,8 @@ export const scheduleManager = {
   endpoints: {
     scheduleActual: `${BASE_URL}/salas/api.php?entidade=reserva/C`,
     setup: `${BASE_URL}/salas/api.php?entidade=setup`,
-    scheduleAll: `{BASE_URL}/salas/api.php?entidade=reserva/C`,
-    schedulePost: `{BASE_URL}/salas/api.php?entidade=reserva/M`,
+    scheduleAll: `${BASE_URL}/salas/api.php?entidade=reserva/C`,
+    schedulePost: `${BASE_URL}/salas/api.php?entidade=reserva/M`,
     rooms: `${BASE_URL}/salas/api.php?entidade=salas`,
   },
   getRoomsForName: async () => {
@@ -79,8 +83,7 @@ export const scheduleManager = {
   shedulePost: async (data: string[]) => {
     try {
       const json = JSON.stringify({ reserva: data });
-
-      console.log(json);
+      // {"reserva":["1-18092024-173000-1"]}
       const _result = await post(json);
 
       if (_result) {
@@ -135,7 +138,12 @@ export const scheduleManager = {
       `${room}-${date}-${user}`,
   },
   getSetup: async () => {
-    const getSetup = await fetcher(scheduleManager.endpoints.setup);
+    const getSetup = await fetcher(scheduleManager.endpoints.setup).then(
+      (e) => e
+    );
+
+    if (!getSetup) return [];
+
     const _resut: Setup = {
       i_setup: getSetup.data[0].i_setup,
       minimumHours: parseInt(getSetup.data[0].minimumHours),
